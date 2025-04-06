@@ -14,10 +14,15 @@ def emotion_detector_route():
         result = emotion_detector(text_to_analyze)
         if "error" in result:
             return f"Error: {result['error']}", 400
+        
+        # Check if the dominant emotion is None
+        if result.get('dominant_emotion') is None:
+            return "Invalid text! Please try again!", 400
+        
         # Format the response as requested
         return f"For the given statement, the system response is 'anger': {result['anger']}, 'disgust': {result['disgust']}, 'fear': {result['fear']}, 'joy': {result['joy']} and 'sadness': {result['sadness']}. The dominant emotion is {result['dominant_emotion']}."
     else:
         return "No text provided to analyze", 400
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5003)
