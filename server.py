@@ -5,13 +5,31 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+    """
+    Renders the home page for the emotion detection application.
+    
+    Returns:
+        str: HTML template for the home page.
+    """
     return render_template('index.html')
 
 @app.route('/emotionDetector', methods=['GET'])
 def emotion_detector_route():
+    """
+    Analyzes the provided text for emotional content and returns the emotion analysis results.
+    
+    Args:
+        textToAnalyze (str): The text to be analyzed for emotions.
+    
+    Returns:
+        str: The emotion analysis result or an error message.
+        int: HTTP status code, indicating the success or failure of the request.
+    """
     text_to_analyze = request.args.get('textToAnalyze')
+    
     if text_to_analyze:
         result = emotion_detector(text_to_analyze)
+        
         if "error" in result:
             return f"Error: {result['error']}", 400
         
@@ -25,4 +43,9 @@ def emotion_detector_route():
         return "No text provided to analyze", 400
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5003)
+    """
+    Starts the Flask web application.
+    
+    The application will be accessible on port 5004.
+    """
+    app.run(debug=True, host='0.0.0.0', port=5004)
