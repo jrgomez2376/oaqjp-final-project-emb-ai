@@ -2,12 +2,25 @@ import requests
 import json
 
 def emotion_detector(text_to_analyse):
+    # Check if the input is blank
+    if not text_to_analyse.strip():  # .strip() removes leading/trailing whitespace
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
+
     url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
     headers = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}
     payload = {"raw_document": {"text": text_to_analyse}}
     
+    # Make the request to the API
     response = requests.post(url, headers=headers, json=payload)
     
+    # Check if the response status code is 200 (OK)
     if response.status_code == 200:
         data = response.json()
         
@@ -39,5 +52,18 @@ def emotion_detector(text_to_analyse):
             'sadness': sadness_score,
             'dominant_emotion': dominant_emotion
         }
+
+    # Handle case where the server response status code is 400
+    elif response.status_code == 400:
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
+    
     else:
+        # Handle other status codes by returning an error message
         return {"error": f"Request failed with status code {response.status_code}"}
